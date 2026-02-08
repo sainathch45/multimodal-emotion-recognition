@@ -1,0 +1,33 @@
+SADNESS TEXT SAMPLES
+====================
+
+Sample 1 (Grief):
+"My grandfather passed away last week. I miss him so much and wish I could talk to him one more time."
+
+Sample 2 (Loneliness):
+"I feel so alone right now. Nobody understands what I'm going through and I have no one to talk to."
+
+Sample 3 (Disappointment):
+"I worked so hard for this and it didn't work out. I feel like I let everyone down, including myself."
+
+Sample 4 (Heartbreak):
+"They left without saying goodbye. Everything reminds me of them and it hurts so much."
+
+Sample 5 (Despair):
+"I don't know what to do anymore. Everything feels hopeless and empty. Nothing makes sense."
+
+Sample 6 (Regret):
+"I wish I had done things differently. Now it's too late and I can't fix my mistakes."
+
+Sample 7 (Melancholy):
+"Looking at old photos makes me realize how much has changed. Those happy times feel so far away now."
+
+Sample 8 (Abandoned):
+"Everyone moved on with their lives and forgot about me. I feel invisible and unwanted."
+
+---
+Instructions:
+1. Copy any sample above
+2. Paste into Gradio text box
+3. Record yourself saying it with sad emotion
+4. Or upload a pre-recorded sad audio file

@@ -1,0 +1,408 @@
+# Default Configuration for Multimodal Emotion Recognition
+# Project: Lightweight Fusion Transformer with Robustness Mechanisms
+# Last Updated: October 19, 2025
+
+# ============================================================================
+# DATASET CONFIGURATION
+# ============================================================================
+dataset: mosei  # Options: mosei, iemocap, meld, mosi
+data_dir: data/processed/mosei
+raw_data_dir: data/raw/mosei
+
+# Modalities to use
+modalities: [text, audio, video]
+
+# Class labels (CMU-MOSEI emotions)
+emotions: [happy, sad, angry, fear, disgust, surprise, neutral]
+num_classes: 7
+
+# Data splits
+train_split: train
+val_split: valid
+test_split: test
+
+# ============================================================================
+# MODEL ARCHITECTURE
+# ============================================================================
+
+# Encoder Configuration
+text_encoder:
+  type: tinybert  # Options: tinybert, distilbert, bert-base
+  pretrained: prajjwal1/bert-tiny  # HuggingFace model name
+  hidden_dim: 312  # Output dimension
+  freeze_layers: 0  # Number of layers to freeze (0 = train all)
+  dropout: 0.1
+
+audio_encoder:
+  type: wav2vec_small  # Options: wav2vec_small, wav2vec_base, mfcc_cnn
+  pretrained: facebook/wav2vec2-base  # For wav2vec options
+  hidden_dim: 256
+  sample_rate: 16000
+  # MFCC options (if using mfcc_cnn)
+  n_mfcc: 40
+  n_fft: 400
+  hop_length: 160
+  dropout: 0.1
+
+video_encoder:
+  type: mobilenetv2  # Options: mobilenetv2, resnet18, facial_landmarks
+  pretrained: true
+  hidden_dim: 256
+  frame_rate: 10  # FPS for video processing
+  face_detection: mtcnn  # Options: mtcnn, retinaface
+  dropout: 0.1
+
+# Projection to common dimension
+common_dim: 256  # All modalities projected to this dimension
+
+# ============================================================================
+# FUSION CONFIGURATION
+# ============================================================================
+
+fusion:
+  type: linformer  # Options: standard, linformer, performer
+  
+  # Modality Reliability Gating
+  use_gating: true
+  gating_hidden_dim: 128
+  gating_activation: sigmoid  # Options: sigmoid, softmax
+  
+  # Fusion pooling
+  pooling: attention  # Options: mean, max, attention, cls_token
+
+# Teacher Model (Full Transformer)
+teacher:
+  num_layers: 6
+  num_heads: 8
+  hidden_dim: 256
+  feedforward_dim: 1024
+  dropout: 0.1
+  attention_dropout: 0.1
+  activation: gelu
+  
+  # Linformer specific (if fusion.type = linformer)
+  linformer_k: 128  # Projection dimension for Linformer
+  
+  # Position encoding
+  use_positional_encoding: true
+  max_seq_len: 128
+
+# Student Model (Lightweight)
+student:
+  num_layers: 3
+  num_heads: 4
+  hidden_dim: 256
+  feedforward_dim: 512
+  dropout: 0.1
+  attention_dropout: 0.1
+  activation: gelu
+  
+  # Parameter sharing
+  share_parameters: true  # Share weights across layers
+  
+  # Linformer specific
+  linformer_k: 64
+  
+  # Position encoding
+  use_positional_encoding: true
+  max_seq_len: 128
+
+# Classification Head
+classifier:
+  hidden_dims: [256, 128]  # Intermediate hidden layers
+  dropout: 0.3
+  activation: relu
+
+# ============================================================================
+# LOSS CONFIGURATION
+# ============================================================================
+
+loss_weights:
+  cls: 1.0          # Classification loss (Focal CE)
+  distill: 0.5      # Knowledge distillation (KL divergence)
+  rec: 0.2          # Reconstruction loss (L2)
+  contrast: 0.3     # Contrastive loss (InfoNCE)
+
+# Focal Loss (for class imbalance)
+focal_loss:
+  gamma: 2.0
+  alpha: null  # Set to list of per-class weights or null for auto
+
+# Contrastive Loss
+contrastive_loss:
+  temperature: 0.07
+  similarity: cosine  # Options: cosine, dot
+  negative_samples: all  # Options: all, batch, hard_negative
+
+# Reconstruction Loss
+reconstruction_loss:
+  type: l2  # Options: l2, l1, smooth_l1
+  reconstruct_from: fused  # Reconstruct modality from fused representation
+
+# ============================================================================
+# TRAINING CONFIGURATION
+# ============================================================================
+
+training:
+  # Optimization
+  batch_size: 64
+  epochs: 40  # Teacher: 40, Student: 30
+  learning_rate: 3e-5  # Teacher: 3e-5, Student: 5e-4
+  weight_decay: 0.01
+  warmup_steps: 1000
+  max_grad_norm: 1.0
+  
+  # Optimizer
+  optimizer: adamw  # Options: adam, adamw, sgd
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  
+  # Learning rate scheduler
+  scheduler: cosine  # Options: cosine, linear, plateau, step
+  scheduler_patience: 3  # For plateau scheduler
+  min_lr: 1.0e-7
+  
+  # Early stopping
+  early_stopping: true
+  patience: 10
+  monitor: val_macro_f1  # Metric to monitor
+  mode: max  # max for F1, min for loss
+  
+  # Checkpointing
+  save_top_k: 3
+  save_last: true
+  checkpoint_metric: val_macro_f1
+  
+  # Mixed precision training
+  use_amp: true  # Automatic Mixed Precision
+  
+  # Gradient accumulation
+  accumulate_grad_batches: 1
+  
+  # Reproducibility
+  seed: 42
+  deterministic: true
+  benchmark: false  # Set true for speed if input size is constant
+  
+  # Logging
+  log_every_n_steps: 50
+  val_check_interval: 1.0  # Validate every epoch
+
+# ============================================================================
+# AUGMENTATION CONFIGURATION
+# ============================================================================
+
+augmentation:
+  # Training augmentation strength
+  enabled: true
+  
+  # Audio augmentation
+  audio:
+    - type: specaugment
+      freq_mask_param: 20
+      time_mask_param: 50
+      n_freq_masks: 2
+      n_time_masks: 2
+      prob: 0.5
+    
+    - type: noise_injection
+      snr_db: [20, 15, 10]
+      prob: 0.3
+    
+    - type: pitch_shift
+      n_steps: [-2, -1, 1, 2]  # Semitones
+      prob: 0.3
+    
+    - type: time_stretch
+      rate: [0.9, 1.1]
+      prob: 0.2
+  
+  # Video augmentation
+  video:
+    - type: random_occlusion
+      max_area_ratio: 0.3
+      prob: 0.4
+    
+    - type: brightness_contrast
+      brightness_range: [0.8, 1.2]
+      contrast_range: [0.8, 1.2]
+      prob: 0.5
+    
+    - type: frame_dropout
+      drop_ratio: [0.1, 0.3]
+      prob: 0.3
+    
+    - type: gaussian_blur
+      kernel_size: [3, 5]
+      prob: 0.2
+  
+  # Text augmentation
+  text:
+    - type: synonym_replace
+      n_words: 3
+      prob: 0.3
+    
+    - type: random_deletion
+      p: 0.1
+      prob: 0.3
+    
+    - type: back_translation
+      src_lang: en
+      tgt_lang: de  # Translate to German and back
+      prob: 0.1  # Expensive, use sparingly
+  
+  # Class-balanced augmentation
+  class_balanced:
+    enabled: true
+    # Apply stronger augmentation to minority classes
+    minority_threshold: 0.1  # Classes with <10% samples
+    augmentation_multiplier: 5  # Augment 5x for minority classes
+    use_mixup: true
+    mixup_alpha: 0.4
+
+# ============================================================================
+# EVALUATION CONFIGURATION
+# ============================================================================
+
+evaluation:
+  # Metrics to compute
+  metrics:
+    - macro_f1
+    - weighted_f1
+    - accuracy
+    - uar  # Unweighted Average Recall
+    - per_class_f1
+    - precision
+    - recall
+    - confusion_matrix
+  
+  # Efficiency metrics
+  compute_efficiency: true
+  efficiency_metrics:
+    - params  # Parameter count
+    - flops   # FLOPs
+    - latency_cpu  # CPU inference time (ms)
+    - latency_gpu  # GPU inference time (ms)
+    - memory_mb    # Memory usage
+  
+  # Robustness tests
+  robustness_tests:
+    enabled: true
+    
+    # Missing modality test
+    missing_modality:
+      test_combinations: [[text], [audio], [video], [text, audio], [text, video], [audio, video]]
+    
+    # Noise injection levels
+    noise_levels: [0.0, 0.05, 0.1, 0.2, 0.5]
+    
+    # Video occlusion ratios
+    occlusion_ratios: [0.0, 0.2, 0.4, 0.6]
+    
+    # Text corruption
+    text_corruption:
+      word_drop_probs: [0.0, 0.1, 0.2, 0.3]
+
+# ============================================================================
+# DISTILLATION CONFIGURATION
+# ============================================================================
+
+distillation:
+  enabled: true
+  temperature: 4.0  # Temperature for softening logits
+  
+  # What to distill
+  distill_logits: true
+  distill_hidden: true
+  distill_attention: false  # Attention map distillation (expensive)
+  
+  # Hidden layer alignment
+  hidden_layer_mapping: auto  # Map student layers to teacher layers
+
+# ============================================================================
+# DEMO CONFIGURATION
+# ============================================================================
+
+demo:
+  # Input settings
+  video_duration_sec: 5
+  audio_sample_rate: 16000
+  video_fps: 10
+  face_detection_confidence: 0.9
+  
+  # Model checkpoint
+  model_checkpoint: experiments/student_run1/best_checkpoint.pt
+  device: cpu  # cpu or cuda
+  
+  # UI settings
+  show_confidence: true
+  show_modality_weights: true
+  show_attention_viz: false
+
+# ============================================================================
+# PATHS
+# ============================================================================
+
+paths:
+  # Data
+  data_root: data
+  processed_data: data/processed
+  raw_data: data/raw
+  
+  # Outputs
+  experiments: experiments
+  logs: logs
+  checkpoints: checkpoints
+  results: results
+  
+  # Cache
+  cache_dir: .cache
+  pretrained_cache: .cache/pretrained
+
+# ============================================================================
+# HARDWARE & PERFORMANCE
+# ============================================================================
+
+hardware:
+  # Device
+  device: auto  # auto, cpu, cuda, cuda:0, etc.
+  num_workers: 4  # DataLoader workers
+  pin_memory: true
+  persistent_workers: true
+  
+  # Distributed training
+  distributed: false
+  num_gpus: 1
+  strategy: ddp  # ddp, ddp_spawn, dp
+
+# ============================================================================
+# LOGGING & VISUALIZATION
+# ============================================================================
+
+logging:
+  # Logger type
+  logger: tensorboard  # Options: tensorboard, wandb, csv
+  
+  # Weights & Biases (if using wandb)
+  wandb:
+    project: multimodal-emotion
+    entity: null  # Your wandb username/team
+    tags: [fusion, transformer, emotion]
+    notes: Lightweight multimodal emotion recognition
+  
+  # What to log
+  log_images: false
+  log_attention_maps: false
+  log_embeddings: false
+  log_gradients: false
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+
+# Debug mode (smaller dataset, fewer epochs)
+debug: false
+debug_samples: 100
+
+# Verbose output
+verbose: 1  # 0: minimal, 1: normal, 2: detailed

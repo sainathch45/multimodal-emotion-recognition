@@ -1,0 +1,33 @@
+ANGER TEXT SAMPLES
+==================
+
+Sample 1 (Frustrated):
+"This is the third time this has happened! How can they keep making the same stupid mistakes?"
+
+Sample 2 (Outraged):
+"This is completely unacceptable! I demand an explanation right now! This treatment is unfair!"
+
+Sample 3 (Irritated):
+"Why won't anyone listen to me? I've been saying this for weeks and nobody pays attention!"
+
+Sample 4 (Furious):
+"I can't believe they did this behind my back! This is a betrayal and I won't forgive it!"
+
+Sample 5 (Annoyed):
+"Stop interrupting me! I'm trying to explain something important here and you keep cutting me off!"
+
+Sample 6 (Enraged):
+"This is absolutely ridiculous! I've had enough of these constant problems and excuses!"
+
+Sample 7 (Impatient):
+"How much longer do I have to wait? This is taking forever and wasting my valuable time!"
+
+Sample 8 (Indignant):
+"They have no right to treat people this way! This kind of behavior is completely unacceptable!"
+
+---
+Instructions:
+1. Copy any sample above
+2. Paste into Gradio text box
+3. Record yourself saying it with angry emotion
+4. Or upload a pre-recorded angry audio file

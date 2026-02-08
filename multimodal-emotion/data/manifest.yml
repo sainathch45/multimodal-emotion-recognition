@@ -1,0 +1,22 @@
+datasets:
+  mosei:
+    source: https://github.com/A2Zadeh/CMU-MOSEI
+    license: academic
+    raw_path: data/raw/mosei
+    processed_path: data/processed/mosei
+    notes: "Follow official scripts; requires downloading sentiment & emotion annotations."
+  iemocap:
+    source: https://sail.usc.edu/iemocap/
+    license: restricted (requires application)
+    raw_path: data/raw/iemocap
+    processed_path: data/processed/iemocap
+    notes: "After approval, unzip sessions under raw_path."
+structure:
+  raw:
+    description: original downloaded archives & media (excluded by .gitignore)
+  processed:
+    description: feature files (.npz / parquet) with keys: text_emb, audio_emb, video_emb, label, meta
+features:
+  text: {encoder: tinybert, dim: 312}
+  audio: {encoder: mfcc_cnn, dim: 256}
+  video: {encoder: mobilenetv2, dim: 256}

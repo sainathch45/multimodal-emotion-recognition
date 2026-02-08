@@ -1,0 +1,143 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyc
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+multimodal-emotion/venv/
+
+# Node.js / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+frontend/dist/
+frontend/.vite/
+*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data (large files)
+data/raw/
+data/processed/
+multimodal-emotion/data/raw/
+multimodal-emotion/data/processed/
+multimodal-emotion/data/CMU-MOSEI/
+multimodal-emotion/data/IEMOCAP_full_release/
+*.npz
+*.npy
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Audio files
+*.wav
+*.mp3
+*.mp4
+*.webm
+*.avi
+recordings/
+uploaded_audio/
+audio_uploads/
+
+# Model checkpoints
+experiments/
+checkpoints/
+trained_models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.pb
+
+# Logs
+logs/
+tensorboard/
+wandb/
+*.log
+
+# Results
+results/
+outputs/
+test_output/
+
+# Cache
+.cache/
+*.pyc
+.pytest_cache/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+debug_*.py
+create_dataset_sample.py
+train_enhanced_fixed.py
+train_nextgen.py
+evaluate_checkpoint.py
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dataset samples (keep only submission zip)
+dataset_sample/
+
+# Research papers (keep only references, not full PDFs if large)
+# research_papers/*.pdf
+
+# Archive and legacy files
+archive_*/
+*_legacy/
+*_old/
+
+# Project documentation (if redundant)
+"Project Docs/"
+
+# Setup guides (optional - uncomment to exclude)
+# GITHUB_SETUP.md
+# PUSH_TO_GITHUB.md

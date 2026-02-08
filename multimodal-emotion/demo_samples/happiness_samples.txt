@@ -1,0 +1,33 @@
+HAPPINESS TEXT SAMPLES
+======================
+
+Sample 1 (Excited):
+"I just got accepted into my dream university! This is the best day of my life!"
+
+Sample 2 (Joyful):
+"We're going on vacation next week and I can't wait! The beach, the sun, everything will be perfect!"
+
+Sample 3 (Proud):
+"I finally completed my project after months of hard work. I'm so proud of what we achieved!"
+
+Sample 4 (Grateful):
+"Thank you so much for everything! You've made me so happy and I really appreciate it!"
+
+Sample 5 (Cheerful):
+"What a beautiful morning! The weather is amazing and I feel fantastic today!"
+
+Sample 6 (Delighted):
+"I can't believe I won the competition! This is absolutely wonderful news!"
+
+Sample 7 (Enthusiastic):
+"Yes! This is exactly what I was hoping for! Everything is working out perfectly!"
+
+Sample 8 (Content):
+"Life is really good right now. I'm surrounded by great people and doing what I love."
+
+---
+Instructions:
+1. Copy any sample above
+2. Paste into Gradio text box
+3. Record yourself saying it with happy emotion
+4. Or upload a pre-recorded happy audio file

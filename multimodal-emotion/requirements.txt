@@ -1,0 +1,34 @@
+# Deep Learning Framework
+torch>=2.6.0
+torchaudio>=2.0.0
+transformers>=4.35.0
+
+# Web Interface
+gradio>=4.0.0
+
+# Audio Processing
+librosa>=0.10.0
+soundfile>=0.12.1
+SpeechRecognition>=3.10.0  # For audio-to-text transcription
+PyAudio>=0.2.13  # Audio I/O (optional, for microphone support)
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+datasets>=2.14.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+pillow>=10.0.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+
+# Utilities
+pyyaml>=6.0
+sentencepiece>=0.1.99
+
+# Optional (if using specific features)
+opencv-python>=4.8.0
+thop>=0.1.1

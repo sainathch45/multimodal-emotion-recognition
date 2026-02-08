@@ -1,0 +1,33 @@
+dataset: mosei
+modalities: [text, audio, video]
+text_encoder: tinybert
+audio_encoder: mfcc_cnn
+video_encoder: mobilenetv2
+fusion: linformer
+teacher:
+  layers: 6
+  heads: 8
+  dim: 768
+student:
+  layers: 3
+  heads: 4
+  dim: 512
+loss_weights:
+  cls: 1.0
+  distill: 0.5
+  rec: 0.2
+  contrast: 0.3
+training:
+  batch_size: 64
+  epochs: 30
+  lr: 5e-4
+  seed: 42
+augmentation:
+  audio: [specaugment, noise]
+  video: [occlusion, brightness]
+  text: [paraphrase, synonym_replace]
+evaluation:
+  metrics: [macro_f1, weighted_f1, UAR, per_class_f1, params, latency]
+robustness:
+  noise_levels: [0.0, 0.1, 0.2, 0.5]
+  drop_modalities: [text, audio, video]
