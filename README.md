@@ -234,9 +234,9 @@ deep learning
 
 ## 👤 Author
 
-[Your Name]  
+Sainath Chakravadhanula
 Honors Project - Computer Science  
-[University Name]  
+Methodist College of Engineering & Technology, Hyderabad
 February 2026
 
 ## 🙏 Acknowledgments
